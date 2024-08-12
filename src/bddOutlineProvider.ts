@@ -7,42 +7,53 @@ export class BDDOutlineProvider implements vscode.DocumentSymbolProvider {
     ): vscode.ProviderResult<vscode.DocumentSymbol[]> {
         const symbols: vscode.DocumentSymbol[] = [];
         const fullDocumentRange = new vscode.Range(0, 0, document.lineCount - 1, Number.MAX_SAFE_INTEGER);
+
+        function parseToken(line: string, token: string): string | null {
+            const regex = new RegExp(`^\\s*\\/\\/\\s*@${token}\\s+(.+?)\\s*$`);
+            const match = line.match(regex);
+            return match ? match[1].trim() : null;
+        }
+
+
         let currentBDD: vscode.DocumentSymbol | undefined;
         let currentFeature: vscode.DocumentSymbol | undefined;
         let currentScenario: vscode.DocumentSymbol | undefined;
 
-        const kScenarioCount = '// @scenario '.length;
-        const kFeatureCount = '// @feature '.length;
-        const kGivenCount ='// @given '.length;
-        const kWhenCount ='// @when '.length;
-        const kThenCount ='// @then '.length;
-        const kAndCount ='// @and '.length;
-        const kLinePrefix ='// '.length;
-
         for (let i = 0; i < document.lineCount; i++) {
             const line = document.lineAt(i);
-            const text = line.text.trim();
+            const text = line.text;
 
-            if (text.startsWith('// @bdd')) {
-                currentBDD = new vscode.DocumentSymbol(text.substring(kLinePrefix).trim(), '', vscode.SymbolKind.Package, fullDocumentRange, line.range);
+            const bddName = parseToken(text, 'bdd');
+            if (bddName) {
+                currentBDD = new vscode.DocumentSymbol(bddName, '', vscode.SymbolKind.Package, fullDocumentRange, line.range);
                 symbols.push(currentBDD);
-            } else if (text.startsWith('// @feature ')) {
-                if (currentBDD) {
-                    currentFeature = new vscode.DocumentSymbol(text.substring(kLinePrefix).trim(), '', vscode.SymbolKind.Class, line.range, line.range);
-                    currentBDD.children.push(currentFeature);
-                }
-            } else if (text.startsWith('// @scenario ')) {
-                if (currentFeature) {
-                    currentScenario = new vscode.DocumentSymbol(text.substring(kLinePrefix).trim(), '', vscode.SymbolKind.Method, line.range, line.range);
-                    currentFeature.children.push(currentScenario);
-                }
-            } else if (text.startsWith('// @given ') || text.startsWith('// @when ') || text.startsWith('// @then ')) {
-                if (currentScenario) {
-                    currentScenario.children.push(new vscode.DocumentSymbol(text.substring(kLinePrefix).trim(), '', vscode.SymbolKind.Field, line.range, line.range));
-                }
+                currentFeature = undefined;
+                currentScenario = undefined;
+                continue;
+            }
+
+            const featureName = parseToken(text, 'feature');
+            if (featureName && currentBDD) {
+                currentFeature = new vscode.DocumentSymbol(featureName, '', vscode.SymbolKind.Class, line.range, line.range);
+                currentBDD.children.push(currentFeature);
+                currentScenario = undefined;
+                continue;
+            }
+
+            const scenarioName = parseToken(text, 'scenario');
+            if (scenarioName && currentFeature) {
+                currentScenario = new vscode.DocumentSymbol(scenarioName, '', vscode.SymbolKind.Method, line.range, line.range);
+                currentFeature.children.push(currentScenario);
+                continue;
+            }
+
+            const stepMatch = text.match(/^\s*\/\/\s*@(\w+)\s+(.+)$/);
+            if (stepMatch && currentScenario) {
+                const [, stepType, stepDescription] = stepMatch;
+                const stepName = `@${stepType} ${stepDescription}`;
+                currentScenario.children.push(new vscode.DocumentSymbol(stepName, '', vscode.SymbolKind.Field, line.range, line.range));
             }
         }
-
         return symbols;
     }
 }
