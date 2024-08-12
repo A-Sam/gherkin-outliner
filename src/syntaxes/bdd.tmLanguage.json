@@ -1,0 +1,10 @@
+{
+    "scopeName": "source.bdd",
+    "injectionSelector": "L:comment.line.double-slash",
+    "patterns": [
+        {
+            "match": "@(given|when|then|and|scenario|feature|bdd|example|rule|background)",
+            "name": "keyword.control.bdd.custom"
+        }
+    ]
+}
