@@ -2,6 +2,8 @@
 
 ## Overview
 
+![alt text](images/Screenshot2024-08-12152807.png)
+
 BDD Outline is a Visual Studio Code extension that enhances the development experience for Behavior-Driven Development (BDD) by providing a structured outline view of your BDD features and scenarios.
 
 ## Features
@@ -68,10 +70,5 @@ Contributions are welcome! Please feel free to submit a Pull Request.
 
 If you encounter any problems or have any suggestions, please [open an issue](link-to-your-issues-page) on our GitHub repository.
 
-```
-
-Remember to replace placeholders like `link-to-your-releases-page` and `link-to-your-issues-page` with actual links to your GitHub repository.
-
-You might also want to add:
-
-1. A screenshot of the extension in action
+## Notes
+Currently only tested for c++!

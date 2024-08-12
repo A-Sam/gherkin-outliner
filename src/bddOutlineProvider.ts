@@ -41,7 +41,7 @@ export class BDDOutlineProvider implements vscode.DocumentSymbolProvider {
 
             const bddName = parseToken(text, 'bdd');
             if (bddName) {
-                currentBDD = new vscode.DocumentSymbol(bddName, '', vscode.SymbolKind.Package, fullDocumentRange, line.range);
+                currentBDD = new vscode.DocumentSymbol(bddName, '', vscode.SymbolKind.Namespace, fullDocumentRange, line.range);
                 symbols.push(currentBDD);
                 currentFeature = undefined;
                 currentScenario = undefined;
@@ -60,7 +60,7 @@ export class BDDOutlineProvider implements vscode.DocumentSymbolProvider {
             const backgroundName = parseToken(text, 'background');
             if (backgroundName && currentFeature) {
                 latest_icon = getIcon('b');
-                currentScenario = new vscode.DocumentSymbol(latest_icon + backgroundName, '', vscode.SymbolKind.Enum, line.range, line.range);
+                currentScenario = new vscode.DocumentSymbol(latest_icon + backgroundName, '', vscode.SymbolKind.Module, line.range, line.range);
                 currentFeature.children.push(currentScenario);
                 continue;
             }
@@ -78,7 +78,7 @@ export class BDDOutlineProvider implements vscode.DocumentSymbolProvider {
                 const [, stepType, stepDescription] = stepMatch;
                 latest_icon = getIcon(stepType) != '' ? getIcon(stepType) : latest_icon;
                 const stepName = `${latest_icon} ${stepDescription}`;
-                currentScenario.children.push(new vscode.DocumentSymbol(stepName, '', vscode.SymbolKind.Field, line.range, line.range));
+                currentScenario.children.push(new vscode.DocumentSymbol(stepName, '', vscode.SymbolKind.Event, line.range, line.range));
             }
         }
         return symbols;
