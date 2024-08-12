@@ -9,7 +9,7 @@ export class BDDOutlineProvider implements vscode.DocumentSymbolProvider {
         const fullDocumentRange = new vscode.Range(0, 0, document.lineCount - 1, Number.MAX_SAFE_INTEGER);
 
         function parseToken(line: string, token: string): string | null {
-            const regex = new RegExp(`^\\s*\\/\\/\\s*@${token}\\s+(.+?)\\s*$`);
+            const regex = new RegExp(`^\\s*\\/\\/\\s*@${token}\\s*(.+?)\\s*$`);
             const match = line.match(regex);
             return match ? match[1].trim() : null;
         }
@@ -25,7 +25,7 @@ export class BDDOutlineProvider implements vscode.DocumentSymbolProvider {
 
             const bddName = parseToken(text, 'bdd');
             if (bddName) {
-                currentBDD = new vscode.DocumentSymbol(bddName, '', vscode.SymbolKind.Package, fullDocumentRange, line.range);
+                currentBDD = new vscode.DocumentSymbol("[swe.2] " + bddName, '', vscode.SymbolKind.Package, fullDocumentRange, line.range);
                 symbols.push(currentBDD);
                 currentFeature = undefined;
                 currentScenario = undefined;
@@ -34,23 +34,30 @@ export class BDDOutlineProvider implements vscode.DocumentSymbolProvider {
 
             const featureName = parseToken(text, 'feature');
             if (featureName && currentBDD) {
-                currentFeature = new vscode.DocumentSymbol(featureName, '', vscode.SymbolKind.Class, line.range, line.range);
+                currentFeature = new vscode.DocumentSymbol("[feature] " + featureName, '', vscode.SymbolKind.Class, line.range, line.range);
                 currentBDD.children.push(currentFeature);
                 currentScenario = undefined;
                 continue;
             }
 
-            const scenarioName = parseToken(text, 'scenario');
-            if (scenarioName && currentFeature) {
-                currentScenario = new vscode.DocumentSymbol(scenarioName, '', vscode.SymbolKind.Method, line.range, line.range);
+            const backgroundName = parseToken(text, 'background');
+            if (backgroundName && currentFeature) {
+                currentScenario = new vscode.DocumentSymbol("[background] " + backgroundName, '', vscode.SymbolKind.Enum, line.range, line.range);
                 currentFeature.children.push(currentScenario);
                 continue;
             }
 
-            const stepMatch = text.match(/^\s*\/\/\s*@(\w+)\s+(.+)$/);
+            const scenarioName = parseToken(text, 'scenario');
+            if (scenarioName && currentFeature) {
+                currentScenario = new vscode.DocumentSymbol("[scenario] " + scenarioName, '', vscode.SymbolKind.Method, line.range, line.range);
+                currentFeature.children.push(currentScenario);
+                continue;
+            }
+
+            const stepMatch = text.match(/^\s*\/\/\s*@(\w+)\s*(.+)$/);
             if (stepMatch && currentScenario) {
                 const [, stepType, stepDescription] = stepMatch;
-                const stepName = `@${stepType} ${stepDescription}`;
+                const stepName = `[${stepType}] ${stepDescription}`;
                 currentScenario.children.push(new vscode.DocumentSymbol(stepName, '', vscode.SymbolKind.Field, line.range, line.range));
             }
         }
