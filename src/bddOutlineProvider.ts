@@ -1,19 +1,19 @@
 import * as vscode from 'vscode';
 
-const elementMap = new Map<string, string>([
-  ['f', '⭐'], // feature
-  ['b', '📌'], // background
-  ['s', '🎬'], // scenario
-  ['g', '🔴'], // given
-  ['w', '🟡'], // when
-  ['t', '🟢'], // then
-  ['e', '💡'], // example
+const iconsMap = new Map<string, string>([
+    ['f', '⭐'], // feature
+    ['b', '📌'], // background
+    ['s', '🎬'], // scenario
+    ['g', '🔴'], // given
+    ['w', '🟡'], // when
+    ['t', '🟢'], // then
+    ['e', '💡'], // example
 ]);
 
-// Example usage:
-console.log(elementMap.get('f')); // Output: 🌟
-console.log(elementMap.get('s')); // Output: 🎬
-
+const getIcon = (key: string): string => {
+    const defaultIcon = ''; // or any other default icon/string you prefer
+    return iconsMap.get(key.toLowerCase()[0]) || defaultIcon;
+};
 
 export class BDDOutlineProvider implements vscode.DocumentSymbolProvider {
     public provideDocumentSymbols(
@@ -49,7 +49,7 @@ export class BDDOutlineProvider implements vscode.DocumentSymbolProvider {
 
             const featureName = parseToken(text, 'feature');
             if (featureName && currentBDD) {
-                currentFeature = new vscode.DocumentSymbol("🚀 " + featureName, '', vscode.SymbolKind.Class, line.range, line.range);
+                currentFeature = new vscode.DocumentSymbol(getIcon('f') + featureName, '', vscode.SymbolKind.Class, line.range, line.range);
                 currentBDD.children.push(currentFeature);
                 currentScenario = undefined;
                 continue;
@@ -57,14 +57,14 @@ export class BDDOutlineProvider implements vscode.DocumentSymbolProvider {
 
             const backgroundName = parseToken(text, 'background');
             if (backgroundName && currentFeature) {
-                currentScenario = new vscode.DocumentSymbol("📌 " + backgroundName, '', vscode.SymbolKind.Enum, line.range, line.range);
+                currentScenario = new vscode.DocumentSymbol(getIcon('b') + backgroundName, '', vscode.SymbolKind.Enum, line.range, line.range);
                 currentFeature.children.push(currentScenario);
                 continue;
             }
 
             const scenarioName = parseToken(text, 'scenario');
             if (scenarioName && currentFeature) {
-                currentScenario = new vscode.DocumentSymbol("🎬 " + scenarioName, '', vscode.SymbolKind.Method, line.range, line.range);
+                currentScenario = new vscode.DocumentSymbol(getIcon('s') + scenarioName, '', vscode.SymbolKind.Method, line.range, line.range);
                 currentFeature.children.push(currentScenario);
                 continue;
             }
@@ -72,7 +72,7 @@ export class BDDOutlineProvider implements vscode.DocumentSymbolProvider {
             const stepMatch = text.match(/^\s*\/\/\s*@(\w+)\s*(.+)$/);
             if (stepMatch && currentScenario) {
                 const [, stepType, stepDescription] = stepMatch;
-                const stepName = `([${stepType.toUpperCase()[0]}]) ${stepDescription}`;
+                const stepName = `${getIcon(stepType)} ${stepDescription}`;
                 currentScenario.children.push(new vscode.DocumentSymbol(stepName, '', vscode.SymbolKind.Field, line.range, line.range));
             }
         }
