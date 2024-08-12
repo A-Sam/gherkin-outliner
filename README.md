@@ -1,71 +1,77 @@
-# gherkinoutliner README
+# BDD Outline for VS Code
 
-This is the README for your extension "gherkinoutliner". After writing up a brief description, we recommend including the following sections.
+## Overview
+
+BDD Outline is a Visual Studio Code extension that enhances the development experience for Behavior-Driven Development (BDD) by providing a structured outline view of your BDD features and scenarios.
 
 ## Features
 
-Describe specific features of your extension including screenshots of your extension in action. Image paths are relative to this README file.
+- **Hierarchical Outline**: Displays a structured view of your BDD elements including BDD, features, backgrounds, scenarios, and steps.
+- **Collapsible Sections**: Allows collapsing and expanding of features and scenarios for better navigation.
+- **Custom Icons**: Uses distinct icons for different BDD elements for easy identification.
+- **Quick Navigation**: Jump to specific parts of your BDD file directly from the outline view.
 
-For example if there is an image subfolder under your extension project workspace:
+## Installation
 
-\!\[feature X\]\(images/feature-x.png\)
+1. Open Visual Studio Code
+2. Go to the Extensions view (Ctrl+Shift+X)
+3. Search for "BDD Outline"
+4. Click Install
 
-> Tip: Many popular extensions utilize animations. This is an excellent way to show off your extension! We recommend short, focused animations that are easy to follow.
+Alternatively, you can download the VSIX file from the [releases page](link-to-your-releases-page) and install it manually.
 
-## Requirements
+## Usage
 
-If you have any requirements or dependencies, add a section describing those and how to install and configure them.
+1. Open a file containing BDD-style comments (e.g., `// @feature`, `// @scenario`, etc.)
+2. Open the Outline view in VS Code (usually in the Explorer sidebar)
+3. You should see a structured view of your BDD elements
 
-## Extension Settings
+## Supported Tokens
 
-Include if your extension adds any VS Code settings through the `contributes.configuration` extension point.
+The extension recognizes the following tokens in comments:
 
-For example:
+- `@bdd`: Defines the overall BDD context
+- `@feature`: Marks the start of a feature
+- `@background`: Defines a background for scenarios
+- `@scenario`: Marks the start of a scenario
+- Other step tokens (e.g., `@given`, `@when`, `@then`) are also recognized as child elements of scenarios
 
-This extension contributes the following settings:
+## Example
 
-* `myExtension.enable`: Enable/disable this extension.
-* `myExtension.thing`: Set to `blah` to do something.
+```javascript
+// @bdd My BDD Project
+// Some code...
 
-## Known Issues
+// @feature User Authentication
+// Feature-related code...
 
-Calling out known issues can help limit users opening duplicate issues against your extension.
+// @background Login Setup
+// Background steps...
 
-## Release Notes
+// @scenario Successful Login
+// @given a user with valid credentials
+// @when they enter their username and password
+// @then they should be logged in successfully
 
-Users appreciate release notes as you update your extension.
+// More scenarios...
+```
 
-### 1.0.0
+## Contributing
 
-Initial release of ...
+Contributions are welcome! Please feel free to submit a Pull Request.
 
-### 1.0.1
+## License
 
-Fixed issue #.
+[MIT License](LICENSE)
 
-### 1.1.0
+## Support
 
-Added features X, Y, and Z.
+If you encounter any problems or have any suggestions, please [open an issue](link-to-your-issues-page) on our GitHub repository.
 
----
+```
 
-## Following extension guidelines
+Remember to replace placeholders like `link-to-your-releases-page` and `link-to-your-issues-page` with actual links to your GitHub repository.
 
-Ensure that you've read through the extensions guidelines and follow the best practices for creating your extension.
+You might also want to add:
 
-* [Extension Guidelines](https://code.visualstudio.com/api/references/extension-guidelines)
-
-## Working with Markdown
-
-You can author your README using Visual Studio Code. Here are some useful editor keyboard shortcuts:
-
-* Split the editor (`Cmd+\` on macOS or `Ctrl+\` on Windows and Linux).
-* Toggle preview (`Shift+Cmd+V` on macOS or `Shift+Ctrl+V` on Windows and Linux).
-* Press `Ctrl+Space` (Windows, Linux, macOS) to see a list of Markdown snippets.
-
-## For more information
-
-* [Visual Studio Code's Markdown Support](http://code.visualstudio.com/docs/languages/markdown)
-* [Markdown Syntax Reference](https://help.github.com/articles/markdown-basics/)
-
-**Enjoy!**
+1. A screenshot of the extension in action
