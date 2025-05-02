@@ -4,9 +4,9 @@ const iconsMap = new Map<string, string>([
     ['f', '⭐'], // feature
     ['b', '📌'], // background
     ['s', '🎬'], // scenario
-    ['g', '🔴'], // given
-    ['w', '🟡'], // when
-    ['t', '🟢'], // then
+    ['g', 'GIVEN '], // given
+    ['w', 'WHEN  '], // when
+    ['t', 'THEN  '], // then
     ['e', '💡'], // example
 ]);
 
